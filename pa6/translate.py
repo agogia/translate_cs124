@@ -23,6 +23,8 @@ def main():
     print str(count) + '. ' + translated_sentence
     count += 1
 
+    dummyVar = 27
+
 
 
 if __name__ == '__main__':
