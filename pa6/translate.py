@@ -1,4 +1,4 @@
-
+#Eric test comment
 
 
 
@@ -22,6 +22,8 @@ def main():
     translated_sentence = ' '.join(translated_sentence)
     print str(count) + '. ' + translated_sentence
     count += 1
+
+    dummyVar = 27
 
 
 
