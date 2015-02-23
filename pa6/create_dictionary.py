@@ -8,7 +8,7 @@ import sys
 gs = goslate.Goslate()
 initial_lang = 'es'
 target_lang = 'en'
-
+#connor's comment
 
 def main():
   translations = {}
