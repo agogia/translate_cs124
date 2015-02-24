@@ -5,7 +5,6 @@ import sys
 gs = goslate.Goslate()
 initial_lang = 'es'
 target_lang = 'en'
-#connor's comment
 
 def main():
   translations = {}
@@ -20,8 +19,6 @@ def main():
     translations[word] = translated
   with open('translations.json', 'w') as saved_dictionary:
     saved_dictionary.write(json.dumps(translations))
-
-
 
 
 if __name__ == '__main__':
