@@ -1,8 +1,11 @@
 import json
 
 def main():
-
-  run_translation(False)
+  withChanges = raw_input("Do you want to run the complex version? (type 'yes' or 'no'): ")
+  if withChanges== "yes":
+    pass
+  else:
+    run_translation(False)
   
 
 def run_translation(withChanges):
