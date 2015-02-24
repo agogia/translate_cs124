@@ -1,6 +1,3 @@
-
-
-
 import goslate
 import json
 import sys
