@@ -1,9 +1,9 @@
 import json
-import nltk
+# import nltk
 import sys
 import collections
-from nltk.corpus import cess_esp
-from nltk import UnigramTagger
+# from nltk.corpus import cess_esp
+# from nltk import UnigramTagger
 
 def main():
   withChanges = raw_input("Do you want to run the complex version? (type 'yes' or 'no'): ")
@@ -24,17 +24,15 @@ def run_translation(withChanges):
       line = line.strip('\n')
       words_in_line = line.split(' ')
       translated_sentence = []
-      print words_in_line
       for word in words_in_line:
-        print word
         if word in translations:
-          translated_sentence.append(translations[word])
+          translated_sentence.append(translations[word][0])
         else:
           translated_sentence.append(word)
       translated_sentence = ' '.join(translated_sentence)
       print str(count) + '. ' + translated_sentence
       count += 1
-
+      print translated_sentence
   else:
     run_complex_translation()
 
