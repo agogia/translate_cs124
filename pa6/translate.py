@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 import json
 # import nltk
 import sys
@@ -26,7 +28,16 @@ def get_sentences_from_file():
 
 def pre_process(sentences_to_translate):
   fix_numbers(sentences_to_translate)
+  fix_punctuation_at_start(sentences_to_translate)
   return
+
+def fix_punctuation_at_start(sentences_to_translate):
+  punctuationToRemove = ["¿".decode("utf8"), "¡".decode("utf8")]
+  for sentence in sentences_to_translate:
+    firstWord = sentence[0]
+    if firstWord[0] in punctuationToRemove:
+      sentence[0] = firstWord[1:]
+
 
 def fix_numbers(sentences_to_translate):
   for sentence in sentences_to_translate:
