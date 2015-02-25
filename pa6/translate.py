@@ -26,7 +26,7 @@ def run_translation(withChanges):
       for word in words_in_line:
         print word
         if word in translations:
-          translated_sentence.append(translations[word])
+          translated_sentence.append(dictionary[word][0])
         else:
           translated_sentence.append(word)
       translated_sentence = ' '.join(translated_sentence)
