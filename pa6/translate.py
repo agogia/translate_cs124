@@ -2,6 +2,7 @@ import json
 # import nltk
 import sys
 import collections
+import re
 # from nltk.corpus import cess_esp
 # from nltk import UnigramTagger
 
@@ -24,7 +25,24 @@ def get_sentences_from_file():
   return sentences
 
 def pre_process(sentences_to_translate):
+  fix_numbers(sentences_to_translate)
   return
+
+def fix_numbers(sentences_to_translate):
+  for sentence in sentences_to_translate:
+    for i in xrange(0,len(sentence)):
+      word = sentence[i]
+
+      numberPattern = re.compile(r"[0-9](\.)[0-9]")
+      if len(numberPattern.findall(word)) != 0:
+        word = word.replace(".", ",")
+        sentence[i] = word
+      else:
+        otherNumberPattern = re.compile(r"[0-9],[0-9]")
+        if len(otherNumberPattern.findall(word)) != 0:
+          word = word.replace(",", ".")
+          sentence[i] = word
+
 
 def translate_sentences(sentences_to_translate, translations):
   translated_sentences = []
