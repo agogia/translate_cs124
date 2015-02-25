@@ -1,7 +1,12 @@
 
 # -*- coding: utf-8 -*-
 import json
+<<<<<<< HEAD
 import nltk
+=======
+import string
+# import nltk
+>>>>>>> angad-test
 import sys
 import collections
 import re
@@ -52,20 +57,25 @@ def fix_numbers(sentences_to_translate):
           word = word.replace(",", ".")
           sentence[i] = word
 
+
 def translate_sentences(sentences_to_translate, translations):
   translated_sentences = []
   for sentence in sentences_to_translate:
     translated_sentence = []
     for word in sentence:
       if word in translations:
-        translated_sentence.append(translations[word][0])
+        translated_sentence += translations[word][0].split(' ')
       else:
         translated_sentence.append(word)
     translated_sentences.append(translated_sentence)
   return translated_sentences
 
+def capitalize_first_word(translated_sentences):
+  for sentence in translated_sentences:
+    sentence[0] = sentence[0].title()
 
 def post_process(translated_sentences):
+  capitalize_first_word(translated_sentences)
   split_words_with_spaces(translated_sentences)
   switch_nouns_and_adjectives(translated_sentences)
 
@@ -97,6 +107,7 @@ def switch_nouns_and_adjectives(translated_sentences):
         sentence[i] = adjective
 
     # print tagged_sentence
+
 
 def print_sentences(translated_sentences):
   count = 1
