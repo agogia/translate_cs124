@@ -5,44 +5,56 @@ import collections
 # from nltk.corpus import cess_esp
 # from nltk import UnigramTagger
 
+
+file_name = 'Corpus.txt'
+
+def get_translation_dictionary():
+  translation_file = open('translations.json', 'r')
+  translations = json.load(translation_file)
+  return translations
+
+def get_sentences_from_file():
+  sentences = []
+  f = open(file_name, 'r')
+  for line in f:
+    line = line.decode("utf8")
+    line = line.strip('\n')
+    words_in_line = line.split(' ')
+    sentences.append(words_in_line)
+  return sentences
+
+def pre_process(sentences_to_translate):
+  return
+
+def translate_sentences(sentences_to_translate, translations):
+  translated_sentences = []
+  for sentence in sentences_to_translate:
+    translated_sentence = []
+    for word in sentence:
+      if word in translations:
+        translated_sentence.append(translations[word][0])
+      else:
+        translated_sentence.append(word)
+    translated_sentences.append(translated_sentence)
+  return translated_sentences
+
+def post_process(translated_sentences):
+  return
+
+def print_sentences(translated_sentences):
+  count = 1
+  for sentence in translated_sentences:
+    translated_sentence = ' '.join(sentence)
+    print str(count) + '. ' + translated_sentence
+    count += 1
+
 def main():
-  withChanges = raw_input("Do you want to run the complex version? (type 'yes' or 'no'): ")
-  if withChanges== "yes":
-    run_translation(True)
-  else:
-    run_translation(False)
-  
-
-def run_translation(withChanges):
-  print '-------'
-  if withChanges==False:
-    translation_file = open('translations.json', 'r')
-    translations = json.load(translation_file)
-    count = 1
-    f = open('Corpus.txt', 'r')
-    for line in f:
-      line = line.decode("utf8")
-      line = line.strip('\n')
-      words_in_line = line.split(' ')
-      print words_in_line
-      translated_sentence = []
-      for word in words_in_line:
-        if word in translations:
-          translated_sentence.append(translations[word][0])
-        else:
-          translated_sentence.append(word)
-      translated_sentence = ' '.join(translated_sentence)
-      print str(count) + '. ' + line
-      print ' '
-      print str(count) + '. ' + translated_sentence
-      print '-----------'
-      count += 1
-
-  else:
-    run_complex_translation()
-
-
-def run_complex_translation():
+  translations = get_translation_dictionary()
+  sentences_to_translate = get_sentences_from_file()
+  pre_process(sentences_to_translate)
+  translated_sentences = translate_sentences(sentences_to_translate, translations)
+  post_process(translated_sentences)
+  print_sentences(translated_sentences)
 
 
 if __name__ == '__main__':
