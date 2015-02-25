@@ -1,6 +1,7 @@
 
 # -*- coding: utf-8 -*-
 import json
+import string
 # import nltk
 import sys
 import collections
@@ -52,20 +53,25 @@ def fix_numbers(sentences_to_translate):
           word = word.replace(",", ".")
           sentence[i] = word
 
+
 def translate_sentences(sentences_to_translate, translations):
   translated_sentences = []
   for sentence in sentences_to_translate:
     translated_sentence = []
     for word in sentence:
       if word in translations:
-        translated_sentence.append(translations[word][0])
+        translated_sentence += translations[word][0].split(' ')
       else:
         translated_sentence.append(word)
     translated_sentences.append(translated_sentence)
   return translated_sentences
 
+def capitalize_first_word(translated_sentences):
+  for sentence in translated_sentences:
+    sentence[0] = sentence[0].title()
 
 def post_process(translated_sentences):
+  capitalize_first_word(translated_sentences)
   return
 
 def print_sentences(translated_sentences):
