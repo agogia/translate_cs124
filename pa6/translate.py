@@ -9,7 +9,6 @@ import re
 # from nltk.corpus import cess_esp
 # from nltk import UnigramTagger
 
-
 file_name = 'Corpus.txt'
 
 def get_translation_dictionary():
