@@ -1,6 +1,7 @@
 import math, collections
 
 def main():
+<<<<<<< HEAD
 <<<<<<< Updated upstream
 =======
 <<<<<<< HEAD
@@ -25,6 +26,8 @@ def main():
     dictionary[foreignWord] = wordList
 =======
 >>>>>>> Stashed changes
+=======
+>>>>>>> origin/master
 	f = open('DictionaryTextFile.txt', 'r')
 	count = 0
 	dictionary = collections.defaultdict(list)
@@ -61,10 +64,13 @@ def main():
    #  	translations[word] = translated
   	# with open('translations.json', 'w') as saved_dictionary:
    #  	saved_dictionary.write(json.dumps(translations))
+<<<<<<< HEAD
 <<<<<<< Updated upstream
 =======
 >>>>>>> eric-test
 >>>>>>> Stashed changes
+=======
+>>>>>>> origin/master
 
 if __name__ == '__main__':
   main()
