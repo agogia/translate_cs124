@@ -6,8 +6,6 @@ import string
 import sys
 import collections
 import re
-# from nltk.corpus import cess_esp
-# from nltk import UnigramTagger
 
 
 file_name = 'Corpus.txt'
@@ -16,6 +14,16 @@ def get_translation_dictionary():
   translation_file = open('translations.json', 'r')
   translations = json.load(translation_file)
   return translations
+
+def get_unigram_dictionary():
+  unigram_file = open('unigramdict.json', 'r')
+  unigrams = json.load(unigram_file)
+  return unigrams
+
+def get_bigram_dictionary():
+  bigram_file = open('bigramdict.json', 'r')
+  bigrams = json.load(bigram_file)
+  return bigrams
 
 def get_sentences_from_file():
   sentences = []
@@ -55,19 +63,39 @@ def fix_numbers(sentences_to_translate):
 
 
 def translate_sentences(sentences_to_translate, translations):
+  unigramDict = get_unigram_dictionary()
+  bigramDict = get_bigram_dictionary()
   translated_sentences = []
   for sentence in sentences_to_translate:
     translated_sentence = []
     for word in sentence:
       if word in translations:
-        to_add = choose_right_word(word, translations, translated_sentence)
+        to_add = choose_right_word(word, translations, translated_sentence, unigramDict, bigramDict)
         translated_sentence += to_add
       else:
         translated_sentence.append(word)
     translated_sentences.append(translated_sentence)
   return translated_sentences
 
-def choose_right_word(spanishWord, translations, translated_sentence):
+def choose_right_word(spanishWord, translations, translated_sentence, unigramDict, bigramDict):
+  # unigramDict = get_unigram_dictionary()
+  # bigramDict = get_bigram_dictionary()
+  topScore = 0.0
+  topWord = ""
+  firstWord = True
+  if len(translated_sentence) != 0:
+    firstWord = False
+    previousWord = translated_sentence[-1]
+
+  for word in translations[spanishWord]:
+    if word in unigramDict:
+      unigramScore = unigramDict[word]
+      print unigramScore
+      if not firstWord:
+        if previousWord in bigramDict:
+          if word in bigramDict[previousWord]:
+            bigramScore = bigramDict[previousWord][word]
+            print bigramScore
   return translations[spanishWord][0].split(' ')
 
 def capitalize_first_word(translated_sentences):
