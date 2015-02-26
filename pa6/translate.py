@@ -92,14 +92,13 @@ def choose_right_word(spanishWord, translations, translated_sentence, unigramDic
     if word in unigramDict:
       unigramScore = unigramDict[word]
       score = unigramScore
-      # print unigramScore
       if not firstWord:
         if previousWord in bigramDict:
           if word in bigramDict[previousWord]:
             bigramScore = bigramDict[previousWord][word]
             
-        score+=bigramScore
-            # print bigramScore
+        score+=9*bigramScore
+    
 
     if score >=topScore:
       topScore = score
