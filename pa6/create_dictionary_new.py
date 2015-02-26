@@ -3,8 +3,11 @@ import math, collections
 def main():
 <<<<<<< HEAD
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 =======
 <<<<<<< HEAD
+=======
+>>>>>>> Stashed changes
   f = open('DictionaryTextFile.txt', 'r')
   count = 0
   dictionary = collections.defaultdict(list)
@@ -25,9 +28,12 @@ def main():
         break
     dictionary[foreignWord] = wordList
 =======
+<<<<<<< Updated upstream
 >>>>>>> Stashed changes
 =======
 >>>>>>> origin/master
+=======
+>>>>>>> Stashed changes
 	f = open('DictionaryTextFile.txt', 'r')
 	count = 0
 	dictionary = collections.defaultdict(list)
@@ -64,6 +70,7 @@ def main():
    #  	translations[word] = translated
   	# with open('translations.json', 'w') as saved_dictionary:
    #  	saved_dictionary.write(json.dumps(translations))
+<<<<<<< Updated upstream
 <<<<<<< HEAD
 <<<<<<< Updated upstream
 =======
@@ -71,6 +78,9 @@ def main():
 >>>>>>> Stashed changes
 =======
 >>>>>>> origin/master
+=======
+>>>>>>> eric-test
+>>>>>>> Stashed changes
 
 if __name__ == '__main__':
   main()
