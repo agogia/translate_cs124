@@ -1,12 +1,8 @@
 
 # -*- coding: utf-8 -*-
 import json
-<<<<<<< HEAD
 import nltk
-=======
 import string
-# import nltk
->>>>>>> angad-test
 import sys
 import collections
 import re
