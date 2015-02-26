@@ -71,15 +71,13 @@ def translate_sentences(sentences_to_translate, translations):
     for word in sentence:
       if word in translations:
         to_add = choose_right_word(word, translations, translated_sentence, unigramDict, bigramDict)
-        translated_sentence += to_add
+        translated_sentence.append(to_add)
       else:
         translated_sentence.append(word)
     translated_sentences.append(translated_sentence)
   return translated_sentences
 
 def choose_right_word(spanishWord, translations, translated_sentence, unigramDict, bigramDict):
-  # unigramDict = get_unigram_dictionary()
-  # bigramDict = get_bigram_dictionary()
   topScore = 0.0
   topWord = ""
   firstWord = True
@@ -88,15 +86,26 @@ def choose_right_word(spanishWord, translations, translated_sentence, unigramDic
     previousWord = translated_sentence[-1]
 
   for word in translations[spanishWord]:
+    score = 0.0
+    bigramScore = 0.0
+
     if word in unigramDict:
       unigramScore = unigramDict[word]
-      print unigramScore
+      score = unigramScore
+      # print unigramScore
       if not firstWord:
         if previousWord in bigramDict:
           if word in bigramDict[previousWord]:
             bigramScore = bigramDict[previousWord][word]
-            print bigramScore
-  return translations[spanishWord][0].split(' ')
+            
+        score+=bigramScore
+            # print bigramScore
+
+    if score >=topScore:
+      topScore = score
+      topWord = word
+
+  return topWord
 
 def capitalize_first_word(translated_sentences):
   for sentence in translated_sentences:
