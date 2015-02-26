@@ -60,11 +60,15 @@ def translate_sentences(sentences_to_translate, translations):
     translated_sentence = []
     for word in sentence:
       if word in translations:
-        translated_sentence += translations[word][0].split(' ')
+        to_add = choose_right_word(word, translations, translated_sentence)
+        translated_sentence += to_add
       else:
         translated_sentence.append(word)
     translated_sentences.append(translated_sentence)
   return translated_sentences
+
+def choose_right_word(spanishWord, translations, translated_sentence):
+  return translations[spanishWord][0].split(' ')
 
 def capitalize_first_word(translated_sentences):
   for sentence in translated_sentences:
