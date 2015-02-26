@@ -1,9 +1,7 @@
-import goslate
 import json
 import sys
 import collections
 
-gs = goslate.Goslate()
 initial_lang = 'es'
 target_lang = 'en'
 
@@ -22,7 +20,10 @@ def main():
         translations = translations[commaIndex+2:]
         wordList.append(englishWord)
       else:
-        englishWord = translations[0:len(translations)-1]
+        endIndex = len(translations)-1
+        if spanishWord == "y":
+          endIndex += 1
+        englishWord = translations[0:endIndex]
         wordList.append(englishWord)
         break
     dictionary[spanishWord] = wordList

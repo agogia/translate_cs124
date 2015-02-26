@@ -1,8 +1,8 @@
 
 # -*- coding: utf-8 -*-
 import json
+import nltk
 import string
-# import nltk
 import sys
 import collections
 import re
@@ -72,7 +72,38 @@ def capitalize_first_word(translated_sentences):
 
 def post_process(translated_sentences):
   capitalize_first_word(translated_sentences)
-  return
+  split_words_with_spaces(translated_sentences)
+  switch_nouns_and_adjectives(translated_sentences)
+
+# Sometimes verbs will be translated into "I ran" and will be treated as one word in post-processing even though they are two
+def split_words_with_spaces(translated_sentences):
+  for j in xrange(0,len(translated_sentences)):
+    sentence = translated_sentences[j]
+    newSentence = []
+    for i in xrange(0,len(sentence)):
+      word = sentence[i]
+      word = word.split()
+      for aWord in word:
+        newSentence.append(aWord)
+    translated_sentences[j] = newSentence
+
+def switch_nouns_and_adjectives(translated_sentences):
+  nounTags = ["NN", "NNP", "NNPS", "NNS"]
+  adjTags = ["JJ", "JJR", "JJS"]
+
+  for sentence in translated_sentences:
+    tagged_sentence = nltk.pos_tag(sentence)
+    for i in xrange(0,len(tagged_sentence)-1):
+      currWordEntry = tagged_sentence[i]
+      nextWordEntry = tagged_sentence[i+1]
+      if currWordEntry[1] in nounTags and nextWordEntry[1] in adjTags:
+        print sentence[i] + " " + sentence[i+1]
+        adjective = sentence[i+1]
+        sentence[i+1] = sentence[i]
+        sentence[i] = adjective
+
+    # print tagged_sentence
+
 
 def print_sentences(translated_sentences):
   count = 1
