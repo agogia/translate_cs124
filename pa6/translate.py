@@ -50,6 +50,19 @@ def pre_process(sentences_to_translate, uni_tag):
   fix_numbers(sentences_to_translate)
   fix_punctuation_at_start(sentences_to_translate)
   switch_nouns_and_adjectives_new(sentences_to_translate, uni_tag)
+  switch_verbs_and_direct_objects(sentences_to_translate, uni_tag)
+
+def switch_verbs_and_direct_objects(sentences_to_translate, uni_tag):
+  for sentence in sentences_to_translate:
+    tagged_sentence = uni_tag.tag(sentence)
+    for i in xrange(0,len(tagged_sentence)-1):
+      currWordEntry = tagged_sentence[i]
+      nextWordEntry = tagged_sentence[i+1]
+      if currWordEntry[1] != None and nextWordEntry[1] != None:
+        if currWordEntry[1].startswith('d') and nextWordEntry[1].startswith('v'):
+          verb = sentence[i+1]
+          sentence[i+1] = sentence[i]
+          sentence[i] = verb
 
 def switch_nouns_and_adjectives_new(sentences_to_translate, uni_tag):
   for sentence in sentences_to_translate:
@@ -92,18 +105,21 @@ def translate_sentences(sentences_to_translate, translations, uni_tag):
   translated_sentences = []
   for sentence in sentences_to_translate:
     translated_sentence = []
+    tagged_sentence = uni_tag.tag(sentence)
     for index in xrange(0,len(sentence)):
       word = sentence[index]
       if word in translations:
-        to_add = choose_right_word(index, translations, translated_sentence, unigramDict, bigramDict, sentence)
+        to_add = choose_right_word(index, translations, translated_sentence, unigramDict, bigramDict, tagged_sentence)
         translated_sentence.append(to_add)
       else:
         translated_sentence.append(word)
     translated_sentences.append(translated_sentence)
   return translated_sentences
 
+#  Note spanishSentence is a list of lists as its the tagged words
 def choose_right_word(index, translations, translated_sentence, unigramDict, bigramDict, spanishSentence):
-  spanishWord = spanishSentence[index]
+  spanishCurrent = spanishSentence[index]
+  spanishWord = spanishCurrent[0]
   topScore = 0.0
   topWord = ""
   runFullTranslation = True
@@ -111,12 +127,16 @@ def choose_right_word(index, translations, translated_sentence, unigramDict, big
   if index != 0:
     firstWord = False
     previousWord = translated_sentence[index-1]
-    phrase = spanishSentence[index-1] + " " + spanishWord
+
+    spanishPrevious = spanishSentence[index-1]
+
+
+    phrase = spanishSentence[index-1][0] + " " + spanishWord
     # print phrase
     comoPattern = re.compile(r"[Cc]ómo se".decode("utf8"))
     if len(comoPattern.findall(phrase)) != 0:
-      translated_sentence[index-1] = "how does"
-      topWord = "one"
+      translated_sentence[index-1] = "how does one"
+      topWord = ""
       runFullTranslation = False
 
     howeverPattern = re.compile(r"[Nn]o obstante".decode("utf8"))
@@ -151,6 +171,13 @@ def choose_right_word(index, translations, translated_sentence, unigramDict, big
       if score >=topScore:
         topScore = score
         topWord = word
+
+  if index != 0:
+    if spanishCurrent[1] != None:
+      if spanishPrevious[0] == "se" and spanishCurrent[1].startswith('v'):
+        translated_sentence[index-1] = topWord
+        topWord = "oneself"
+
 
   return topWord
 
