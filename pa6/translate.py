@@ -177,6 +177,9 @@ def choose_right_word(index, translations, translated_sentence, unigramDict, big
       if spanishPrevious[0] == "se" and spanishCurrent[1].startswith('v'):
         translated_sentence[index-1] = topWord
         topWord = "oneself"
+    if spanishPrevious[1] != None:
+      if spanishPrevious[1].startswith('v') and spanishCurrent[0] == 'a':
+        topWord = ""
 
 
   return topWord
