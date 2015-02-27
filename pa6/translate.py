@@ -107,6 +107,11 @@ def choose_right_word(index, translations, translated_sentence, unigramDict, big
       translated_sentence[index-1] = "however"
       runFullTranslation = False
 
+    thatPattern = re.compile(r"[Dd]e que".decode("utf8"))
+    if len(thatPattern.findall(phrase)) != 0:
+      translated_sentence[index-1] = "that"
+      runFullTranslation = False
+
 
 
   if runFullTranslation:
