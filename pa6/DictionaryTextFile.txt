@@ -155,7 +155,7 @@ gracias: thanks
 grupo: group
 guardó: kept, saved
 ha: has
-hace: ago
+hace: do, make, cause, ask, lumber, perpetrate, take on, pull, wet, create
 hacer: do, make, cause, ask, lumber, perpetrate, take on, pull, wet, create
 hacían: made, did, caused, asked, lumbered, perpetrated, took on, pulled, created
 han: have

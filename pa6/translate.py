@@ -1,7 +1,7 @@
 
 # -*- coding: utf-8 -*-
 import json
-# import nltk
+import nltk
 import string
 import sys
 import collections
@@ -38,7 +38,7 @@ def get_sentences_from_file():
       for word in split_words:
         if word != '':
           sentence.append(word)
-    print sentence
+    # print sentence
     sentences.append(sentence)
   return sentences
 
@@ -105,7 +105,7 @@ def choose_right_word(spanishWord, translations, translated_sentence, unigramDic
           if word in bigramDict[previousWord]:
             bigramScore = bigramDict[previousWord][word]
             
-        score+=bigramScore
+        score+=9*bigramScore
             # print bigramScore
 
     if score >=topScore:
@@ -163,9 +163,9 @@ def print_sentences(translated_sentences):
 def main():
   translations = get_translation_dictionary()
   sentences_to_translate = get_sentences_from_file()
-  # pre_process(sentences_to_translate)
+  pre_process(sentences_to_translate)
   translated_sentences = translate_sentences(sentences_to_translate, translations)
-  # post_process(translated_sentences)
+  post_process(translated_sentences)
   print_sentences(translated_sentences)
 
 
