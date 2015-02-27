@@ -75,42 +75,60 @@ def translate_sentences(sentences_to_translate, translations):
   translated_sentences = []
   for sentence in sentences_to_translate:
     translated_sentence = []
-    for word in sentence:
+    for index in xrange(0,len(sentence)):
+      word = sentence[index]
       if word in translations:
-        to_add = choose_right_word(word, translations, translated_sentence, unigramDict, bigramDict)
+        to_add = choose_right_word(index, translations, translated_sentence, unigramDict, bigramDict, sentence)
         translated_sentence.append(to_add)
       else:
         translated_sentence.append(word)
     translated_sentences.append(translated_sentence)
   return translated_sentences
 
-def choose_right_word(spanishWord, translations, translated_sentence, unigramDict, bigramDict):
+def choose_right_word(index, translations, translated_sentence, unigramDict, bigramDict, spanishSentence):
+  spanishWord = spanishSentence[index]
   topScore = 0.0
   topWord = ""
+  runFullTranslation = True
   firstWord = True
-  if len(translated_sentence) != 0:
+  if index != 0:
     firstWord = False
-    previousWord = translated_sentence[-1]
+    previousWord = translated_sentence[index-1]
+    phrase = spanishSentence[index-1] + " " + spanishWord
+    # print phrase
+    comoPattern = re.compile(r"[Cc]ómo se".decode("utf8"))
+    if len(comoPattern.findall(phrase)) != 0:
+      translated_sentence[index-1] = "how does"
+      topWord = "one"
+      runFullTranslation = False
 
-  for word in translations[spanishWord]:
-    score = 0.0
-    bigramScore = 0.0
+    howeverPattern = re.compile(r"[Nn]o obstante".decode("utf8"))
+    if len(howeverPattern.findall(phrase)) != 0:
+      translated_sentence[index-1] = "however"
+      runFullTranslation = False
 
-    if word in unigramDict:
-      unigramScore = unigramDict[word]
-      score = unigramScore
-      # print unigramScore
-      if not firstWord:
-        if previousWord in bigramDict:
-          if word in bigramDict[previousWord]:
-            bigramScore = bigramDict[previousWord][word]
-            
-        score+=9*bigramScore
-            # print bigramScore
 
-    if score >=topScore:
-      topScore = score
-      topWord = word
+
+  if runFullTranslation:
+    for word in translations[spanishWord]:
+      score = 0.0
+      bigramScore = 0.0
+
+      if word in unigramDict:
+        unigramScore = unigramDict[word]
+        score = unigramScore
+        # print unigramScore
+        if not firstWord:
+          if previousWord in bigramDict:
+            if word in bigramDict[previousWord]:
+              bigramScore = bigramDict[previousWord][word]
+              
+          score+=9*bigramScore
+              # print bigramScore
+
+      if score >=topScore:
+        topScore = score
+        topWord = word
 
   return topWord
 
