@@ -6,6 +6,10 @@ import string
 import sys
 import collections
 import re
+import pickle
+
+from nltk.corpus import cess_esp as cess
+from nltk import UnigramTagger as ut
 
 
 file_name = 'Corpus.txt'
@@ -42,9 +46,22 @@ def get_sentences_from_file():
     sentences.append(sentence)
   return sentences
 
-def pre_process(sentences_to_translate):
+def pre_process(sentences_to_translate, uni_tag):
   fix_numbers(sentences_to_translate)
   fix_punctuation_at_start(sentences_to_translate)
+  switch_nouns_and_adjectives_new(sentences_to_translate, uni_tag)
+
+def switch_nouns_and_adjectives_new(sentences_to_translate, uni_tag):
+  for sentence in sentences_to_translate:
+    tagged_sentence = uni_tag.tag(sentence)
+    for i in xrange(0,len(tagged_sentence)-1):
+      currWordEntry = tagged_sentence[i]
+      nextWordEntry = tagged_sentence[i+1]
+      if currWordEntry[1] != None and nextWordEntry[1] != None:
+        if (currWordEntry[1].startswith('n') or currWordEntry[1].startswith('p')) and nextWordEntry[1].startswith('a'):
+          adjective = sentence[i+1]
+          sentence[i+1] = sentence[i]
+          sentence[i] = adjective
 
 def fix_punctuation_at_start(sentences_to_translate):
   punctuationToRemove = ["¿".decode("utf8"), "¡".decode("utf8")]
@@ -69,7 +86,7 @@ def fix_numbers(sentences_to_translate):
           sentence[i] = word
 
 
-def translate_sentences(sentences_to_translate, translations):
+def translate_sentences(sentences_to_translate, translations, uni_tag):
   unigramDict = get_unigram_dictionary()
   bigramDict = get_bigram_dictionary()
   translated_sentences = []
@@ -144,7 +161,6 @@ def capitalize_first_word(translated_sentences):
 def post_process(translated_sentences):
   capitalize_first_word(translated_sentences)
   split_words_with_spaces(translated_sentences)
-  switch_nouns_and_adjectives(translated_sentences)
 
 # Sometimes verbs will be translated into "I ran" and will be treated as one word in post-processing even though they are two
 def split_words_with_spaces(translated_sentences):
@@ -158,23 +174,6 @@ def split_words_with_spaces(translated_sentences):
         newSentence.append(aWord)
     translated_sentences[j] = newSentence
 
-def switch_nouns_and_adjectives(translated_sentences):
-  nounTags = ["NN", "NNP", "NNPS", "NNS"]
-  adjTags = ["JJ", "JJR", "JJS"]
-
-  for sentence in translated_sentences:
-    tagged_sentence = nltk.pos_tag(sentence)
-    for i in xrange(0,len(tagged_sentence)-1):
-      currWordEntry = tagged_sentence[i]
-      nextWordEntry = tagged_sentence[i+1]
-      if currWordEntry[1] in nounTags and nextWordEntry[1] in adjTags:
-        print sentence[i] + " " + sentence[i+1]
-        adjective = sentence[i+1]
-        sentence[i+1] = sentence[i]
-        sentence[i] = adjective
-
-    # print tagged_sentence
-
 
 def print_sentences(translated_sentences):
   count = 1
@@ -184,10 +183,13 @@ def print_sentences(translated_sentences):
     count += 1
 
 def main():
+  uni_tag = 3
+  with open("unigramTagger.json", 'rb') as input:
+    uni_tag = pickle.load(input)
   translations = get_translation_dictionary()
   sentences_to_translate = get_sentences_from_file()
-  pre_process(sentences_to_translate)
-  translated_sentences = translate_sentences(sentences_to_translate, translations)
+  pre_process(sentences_to_translate, uni_tag)
+  translated_sentences = translate_sentences(sentences_to_translate, translations, uni_tag)
   post_process(translated_sentences)
   print_sentences(translated_sentences)
 
