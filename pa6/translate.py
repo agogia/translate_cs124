@@ -1,7 +1,7 @@
 
 # -*- coding: utf-8 -*-
 import json
-import nltk
+# import nltk
 import string
 import sys
 import collections
@@ -29,10 +29,17 @@ def get_sentences_from_file():
   sentences = []
   f = open(file_name, 'r')
   for line in f:
+    sentence = []
     line = line.decode("utf8")
     line = line.strip('\n')
     words_in_line = line.split(' ')
-    sentences.append(words_in_line)
+    for words in words_in_line:
+      split_words = re.split('([¿,.()\"?:])', words)
+      for word in split_words:
+        if word != '':
+          sentence.append(word)
+    print sentence
+    sentences.append(sentence)
   return sentences
 
 def pre_process(sentences_to_translate):
@@ -156,9 +163,9 @@ def print_sentences(translated_sentences):
 def main():
   translations = get_translation_dictionary()
   sentences_to_translate = get_sentences_from_file()
-  pre_process(sentences_to_translate)
+  # pre_process(sentences_to_translate)
   translated_sentences = translate_sentences(sentences_to_translate, translations)
-  post_process(translated_sentences)
+  # post_process(translated_sentences)
   print_sentences(translated_sentences)
 
 
