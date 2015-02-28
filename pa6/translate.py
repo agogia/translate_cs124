@@ -38,11 +38,14 @@ def get_sentences_from_file():
     line = line.strip('\n')
     words_in_line = line.split(' ')
     for words in words_in_line:
-      split_words = re.split('([¿,.()\"?:])', words)
-      for word in split_words:
-        if word != '':
-          sentence.append(word)
-    # print sentence
+      match = re.search(r"[0-9]([\.,])[0-9]", words)
+      if match:
+        sentence.append(words)
+      else:
+        split_words = re.split('([¿,.()\"?:;])', words)
+        for word in split_words:
+          if word != '':
+            sentence.append(word)
     sentences.append(sentence)
   return sentences
 
@@ -209,6 +212,13 @@ def print_sentences(translated_sentences):
   count = 1
   for sentence in translated_sentences:
     translated_sentence = ' '.join(sentence)
+    translated_sentence = translated_sentence.replace(' ,', ',')
+    translated_sentence = translated_sentence.replace(' )', ')')
+    translated_sentence = translated_sentence.replace(' ?', '?')
+    translated_sentence = translated_sentence.replace('( ', '(')
+    translated_sentence = translated_sentence.replace(' :', ':')
+    translated_sentence = translated_sentence.replace(' ;', ';')
+    translated_sentence = translated_sentence.replace(' .', '.')
     print str(count) + '. ' + translated_sentence
     count += 1
 
