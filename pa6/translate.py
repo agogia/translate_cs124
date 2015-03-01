@@ -12,7 +12,8 @@ from nltk.corpus import cess_esp as cess
 from nltk import UnigramTagger as ut
 
 
-file_name = 'Corpus.txt'
+file_name = ''
+complex_translate = ''
 
 def get_translation_dictionary():
   translation_file = open('translations.json', 'r')
@@ -32,21 +33,26 @@ def get_bigram_dictionary():
 def get_sentences_from_file():
   sentences = []
   f = open(file_name, 'r')
+  global complex_translate
   for line in f:
-    sentence = []
     line = line.decode("utf8")
     line = line.strip('\n')
-    words_in_line = line.split(' ')
-    for words in words_in_line:
-      match = re.search(r"[0-9]([\.,])[0-9]", words)
-      if match:
-        sentence.append(words)
-      else:
-        split_words = re.split('([¿,.()\"?:;])', words)
-        for word in split_words:
-          if word != '':
-            sentence.append(word)
-    sentences.append(sentence)
+    if complex_translate:
+      sentence = []
+      words_in_line = line.split(' ')
+      for words in words_in_line:
+        match = re.search(r"[0-9]([\.,])[0-9]", words)
+        if match:
+          sentence.append(words)
+        else:
+          split_words = re.split('([¿,.()\"?:;])', words)
+          for word in split_words:
+            if word != '':
+              sentence.append(word)
+      sentences.append(sentence)
+    else:
+      words_in_line = line.split(' ')
+      sentences.append(words_in_line)
   return sentences
 
 def pre_process(sentences_to_translate, uni_tag):
@@ -106,13 +112,18 @@ def translate_sentences(sentences_to_translate, translations, uni_tag):
   unigramDict = get_unigram_dictionary()
   bigramDict = get_bigram_dictionary()
   translated_sentences = []
+  global complex_translate
   for sentence in sentences_to_translate:
     translated_sentence = []
     tagged_sentence = uni_tag.tag(sentence)
     for index in xrange(0,len(sentence)):
       word = sentence[index]
       if word in translations:
-        to_add = choose_right_word(index, translations, translated_sentence, unigramDict, bigramDict, tagged_sentence)
+        if complex_translate:
+          ####### THIS IS THE LANGAUGE MODEL TO CHOOSE THE BEST WORD
+          to_add = choose_right_word(index, translations, translated_sentence, unigramDict, bigramDict, tagged_sentence)
+        else:
+          to_add = translations[word][0]
         translated_sentence.append(to_add)
       else:
         translated_sentence.append(word)
@@ -219,18 +230,52 @@ def print_sentences(translated_sentences):
     translated_sentence = translated_sentence.replace(' :', ':')
     translated_sentence = translated_sentence.replace(' ;', ';')
     translated_sentence = translated_sentence.replace(' .', '.')
+    match = re.search(r'(\"\s(.*)?\s\")', translated_sentence)
+    if match:
+      translated_sentence = translated_sentence.replace(match.group(1), '\"' + match.group(2) + '\"')
     print str(count) + '. ' + translated_sentence
     count += 1
 
+
+def checkErrors():
+  if len(sys.argv) != 3:
+    print 'wrong number of arguments. takes 2 arguments'
+    print 'argument 1: \'-simple\' or \'-complex\''
+    print 'argument 2: file to translate, \'dev_set.txt\' or \'test_set.txt\''
+    exit(1)
+  global complex_translate
+  if sys.argv[1] == '-simple':
+    complex_translate = False
+  elif sys.argv[1] == '-complex':
+    complex_translate = True
+  else:
+    print 'first argument must be \'-simple\' or \'-complex\''
+    exit(1)
+  global file_name
+  if sys.argv[2] == 'dev_set.txt':
+    file_name = 'dev_set.txt'
+  elif sys.argv[2] == 'test_set.txt':
+    file_name = 'test_set.txt'
+  else:
+    print 'second argument must be \'dev_set.txt\' or \'test_set.txt\''
+    exit(1)
+
+
+
 def main():
   uni_tag = 3
+  checkErrors()
   with open("unigramTagger.json", 'rb') as input:
     uni_tag = pickle.load(input)
   translations = get_translation_dictionary()
   sentences_to_translate = get_sentences_from_file()
-  pre_process(sentences_to_translate, uni_tag)
+  # print sentences_to_translate
+  global complex_translate
+  if complex_translate:
+    pre_process(sentences_to_translate, uni_tag)
   translated_sentences = translate_sentences(sentences_to_translate, translations, uni_tag)
-  post_process(translated_sentences)
+  if complex_translate:
+    post_process(translated_sentences)
   print_sentences(translated_sentences)
 
 
