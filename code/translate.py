@@ -144,7 +144,7 @@ def choose_right_word(index, translations, translated_sentence, unigramDict, big
 
     spanishPrevious = spanishSentence[index-1]
 
-
+    # common phrases
     phrase = spanishSentence[index-1][0] + " " + spanishWord
     # print phrase
     comoPattern = re.compile(r"[Cc]ómo se".decode("utf8"))
@@ -187,10 +187,13 @@ def choose_right_word(index, translations, translated_sentence, unigramDict, big
         topWord = word
 
   if index != 0:
+    # reflexive verbs
     if spanishCurrent[1] != None:
       if spanishPrevious[0] == "se" and spanishCurrent[1].startswith('v'):
         translated_sentence[index-1] = topWord
         topWord = "oneself"
+
+    # remove "a"
     if spanishPrevious[1] != None:
       if spanishPrevious[1].startswith('v') and spanishCurrent[0] == 'a':
         topWord = ""
